@@ -23,7 +23,7 @@ bash ./scripts/run_comparisons.sh
 
 ## Training and evaluation on real dataset
 Data preparation:
-Our experimetns used [Hest 1k](https://github.com/mahmoodlab/HEST/tree/main) dataset. Before execute our experiments, you should get permittion. 
+Our experimetns used [HEST-1k](https://github.com/mahmoodlab/HEST/tree/main) dataset. Before execute our experiments, you should get permittion. 
 
 Execute all experiments
 
@@ -35,22 +35,20 @@ python ./scripts/execute_all_exps.py
 
 '''
 # download dataset
+# Put HEST_v1_1_0.csv file into dataset/hest1k/ 
 python ./preprocessing/download_hest_benchmarks.py st_v2
 python ./preprocessing/download_hest_benchmarks.py task_1
 python ./preprocessing/download_hest_benchmarks.py st_v3
 
 # preprocessing
-python ./preprocessing/make_paired.py ./dataset/hest1k/st_v2
+python ./preprocessing/make_paired.py ./dataset/hest1k/task_1
 python ./preprocessing/feature_extraction.py --model_name conch_v1 \
-    --save_dir ./dataset/hest1k/st_v2/feat/conch_v1 \
-    --input_dir ./dataset/hest1k/st_v2/paired_data
+    --save_dir ./dataset/hest1k/task_1/feat/conch_v1 \
+    --input_dir ./dataset/hest1k/task_1/paired_data
 
-python ./preprocessing/feature_extraction.py --model_name densenet121 \
-    --save_dir ./dataset/hest1k/st_v2/feat/densenet121 \
-    --input_dir ./dataset/hest1k/st_v2/paired_data
 python ./scripts/export_highly_variable.py \
-    --data_dir ./dataset/hest1k/st_v3/feat/conch_v1 \
-    --output_path ./dataset/hest1k/st_v3/opts/comp/highly_variable_genes_50.txt \
+    --data_dir ./dataset/hest1k/task_1/feat/conch_v1 \
+    --output_path ./dataset/hest1k/task_1/opts/comp/highly_variable_genes_50.txt \
     --ntop_genes 50
 
 # run benchmark
@@ -89,29 +87,6 @@ python ./strank/evaluation.py \
         --batch_size 1024 \
         --use_gene ./dataset/hest1k/task_1/opts/comp/highly_variable_genes.txt \
         --output_csv {save_path}
-
-        
-python ./strank/train.py \
-        --data_dir  ./dataset/hest1k/st_v2/feat/conch_v1\
-        --param_path ./dataset/hest1k/st_v2/opts/comp/stranklist/opt_param.pt \
-        --test_sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --val_sample_ids SPA136 SPA135 SPA134 SPA133 SPA132 SPA131 \
-        --log_dir ./dataset/hest1k/st_v2/opts/comp/logs \
-        --loss stranklist \
-        --model linear \
-        --max_epochs 1000 \
-        --use_gene ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_50.txt \
-        --ngpu 1
-
-python ./strank/evaluation.py \
-        --data_dir ./dataset/hest1k/st_v2/feat/conch_v1\
-        --param_path ./dataset/hest1k/st_v2/opts/comp/stranklist/opt_param.pt \
-        --sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --model linear \
-        --loss stranklist \
-        --batch_size 1024 \
-        --use_gene ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_50.txt \
-        --output_csv output/st_exp.csv
 '''
 
 
@@ -138,7 +113,7 @@ Our model achieves the following performance on :
 
 
 ## Acknowledgement
-- We used [Hest 1k](https://github.com/mahmoodlab/HEST) dataset.
+- We used [HEST-1k](https://github.com/mahmoodlab/HEST) dataset.
 - For the feature extractor, we implemented the code based on [CLAM](https://github.com/mahmoodlab/CLAM).
 
 
