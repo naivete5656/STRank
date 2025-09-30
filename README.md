@@ -30,14 +30,18 @@ python ./scripts/execute_all_exps.py
 
 ## Separately running code
 
-'''
+```
 # download dataset
 # Put HEST_v1_1_0.csv file into dataset/hest1k/ 
+
+# another examples
 python ./preprocessing/download_hest_benchmarks.py st_v2
 python ./preprocessing/download_hest_benchmarks.py task_1
 python ./preprocessing/download_hest_benchmarks.py st_v3
+```
 
 # preprocessing
+```
 python ./preprocessing/make_paired.py ./dataset/hest1k/task_1
 python ./preprocessing/feature_extraction.py --model_name conch_v1 \
     --save_dir ./dataset/hest1k/task_1/feat/conch_v1 \
@@ -47,22 +51,10 @@ python ./scripts/export_highly_variable.py \
     --data_dir ./dataset/hest1k/task_1/feat/conch_v1 \
     --output_path ./dataset/hest1k/task_1/opts/comp/highly_variable_genes_50.txt \
     --ntop_genes 50
+```
 
 # run benchmark
-# download dataset
-python ./preprocessing/download_hest_benchmarks.py
-
-# preprocessing
-python ./preprocessing/make_paired.py ./dataset/hest1k/task_1
-python ./preprocessing/feature_extraction.py --model_name conch_v1 \
-    --save_dir ./dataset/hest1k/task_1/feat/conch_v1 \
-    --input_dir ./dataset/hest1k/task_1/paired_data
-python ./scripts/export_highly_variable.py \
-    --data_dir ./dataset/hest1k/task_1/feat/conch_v1 \
-    --output_path ./dataset/hest1k/task_1/opts/comp/highly_variable_genes.txt \
-    --ntop_genes 50
-
-# run benchmark
+```
 python ./strank/train.py \
         --data_dir  ./dataset/hest1k/task_1/feat/conch_v1\
         --param_path ./dataset/hest1k/task_1/opts/comp/stranklist/opt_param.pt \
@@ -84,7 +76,7 @@ python ./strank/evaluation.py \
         --batch_size 1024 \
         --use_gene ./dataset/hest1k/task_1/opts/comp/highly_variable_genes.txt \
         --output_csv {save_path}
-'''
+```
 
 
 ## Results
@@ -114,332 +106,21 @@ Our model achieves the following performance on :
 - For the feature extractor, we implemented the code based on [CLAM](https://github.com/mahmoodlab/CLAM).
 
 
+## Citation
 
+If you use the code or results in this repository, please cite our paper:
 
+```bibtex
+@article{kazuya2025learning,
+  title={Learning Relative Gene Expression Trends
+under Batch Effects and Stochastic Noise
+in Spatial Transcriptomics},
+  author={Kazuya Nishimura, , Haruka Hirose, Ryoma Bise, Kaito Shiku, Yasuhiro Kojima},
+  journal={Neurips},
+  year={2025}
+}
+```
 
-LOSS_NAMES=(mse nb poisson strankg pearsona stranklist ranking)
-LOSS_NAMES=(stranklist_v2)
-GENE_NUMS=(250 1000)
-for num_gene in "${GENE_NUMS[@]}"
-do
-for loss in "${LOSS_NAMES[@]}"
-do 
+## License
 
-python ./strank/train.py \
-        --data_dir  ./dataset/hest1k/st_v2/feat/conch_v1\
-        --param_path ./dataset/hest1k/st_v2/opts/comp/${loss}/opt_param_stnet.pt \
-        --test_sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --val_sample_ids SPA136 SPA135 SPA134 SPA133 SPA132 SPA131 \
-        --log_dir ./dataset/hest1k/st_v2/opts/comp/logs \
-        --loss ${loss} \
-        --model linear \
-        --max_epochs 500 \
-        --use_gene ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --ngpu 1
-
-python ./strank/evaluation.py \
-        --data_dir ./dataset/hest1k/st_v2/feat/conch_v1\
-        --param_path ./dataset/hest1k/st_v2/opts/comp/${loss}/opt_param.pt \
-        --sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --model linear \
-        --loss ${loss} \
-        --batch_size 1024 \
-        --use_gene ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --output_csv output/stnet/${num_gene}/st_${loss}_exp.csv
-done
-done
-
-
-
-########## memo
-LOSS_NAMES=(mse nb poisson ranking strankg pearsona stranklist)
-GENE_NUMS=(50 250)
-for num_gene in "${GENE_NUMS[@]}"
-do
-python ./scripts/export_highly_variable.py \
-    --data_dir ./dataset/hest1k/st_v3/feat/conch_v1 \
-    --output_path ./dataset/hest1k/st_v3/opts/comp/highly_variable_genes_${num_gene}.txt \
-    --ntop_genes ${num_gene}
-
-for loss in "${LOSS_NAMES[@]}"
-do 
-
-python ./strank/train.py \
-        --data_dir  ./dataset/hest1k/st_v3/feat/conch_v1\
-        --param_path ./dataset/hest1k/st_v3/opts/comp/${loss}/opt_param.pt \
-        --test_sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --val_sample_ids SPA136 SPA135 SPA134 SPA133 SPA132 SPA131 \
-        --log_dir ./dataset/hest1k/st_v3/opts/comp/logs \
-        --loss ${loss} \
-        --model linear \
-        --max_epochs 500 \
-        --use_gene ./dataset/hest1k/st_v3/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --ngpu 1
-
-python ./strank/evaluation.py \
-        --data_dir ./dataset/hest1k/st_v3/feat/conch_v1\
-        --param_path ./dataset/hest1k/st_v3/opts/comp/${loss}/opt_param.pt \
-        --sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --model linear \
-        --loss ${loss} \
-        --batch_size 1024 \
-        --use_gene ./dataset/hest1k/st_v3/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --output_csv output/st3/${num_gene}/st_${loss}_exp.csv
-done
-done
-
-python ./strank/train.py \
-        --data_dir  ./dataset/hest1k/task_1/feat/conch_v1\
-        --param_path ./dataset/hest1k/task_1/opts/comp/${loss}/opt_param_${num_gene}.pt \
-        --test_sample_ids NCBI783  \
-        --val_sample_ids TENX95 \
-        --log_dir ./dataset/hest1k/task_1/opts/comp/logs \
-        --loss ${loss} \
-        --model linear \
-        --max_epochs 1000 \
-        --use_gene ./dataset/hest1k/task_1/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --ngpu 1
-
-python ./strank/evaluation.py \
-        --data_dir ./dataset/hest1k/task_1/feat/conch_v1\
-        --param_path ./dataset/hest1k/task_1/opts/comp/${loss}/opt_param_${num_gene}.pt \
-        --sample_ids NCBI783  \
-        --model linear \
-        --loss ${loss} \
-        --batch_size 1024 \
-        --use_gene ./dataset/hest1k/task_1/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --output_csv output/all_generesult_${loss}_${num_gene}.csv
-done
-done
-
-$$$$$$$$$$$$$$
-LOSS_NAMES=(strankg pearsona stranklist)
-GENE_NUMS=(50 250)
-for num_gene in "${GENE_NUMS[@]}"
-do
-python ./scripts/export_highly_variable.py \
-    --data_dir ./dataset/hest1k/st_v3/feat/conch_v1 \
-    --output_path ./dataset/hest1k/st_v3/opts/comp/highly_variable_genes_${num_gene}.txt \
-    --ntop_genes ${num_gene}
-
-for loss in "${LOSS_NAMES[@]}"
-do 
-
-python ./strank/train.py \
-        --data_dir  ./dataset/hest1k/st_v3/feat/densenet121\
-        --param_path ./dataset/hest1k/st_v3/opts/comp/${loss}/opt_param.pt \
-        --test_sample_ids SPA118 SPA117 SPA116  \
-        --val_sample_ids SPA115 SPA114 SPA113 \
-        --log_dir ./dataset/hest1k/st_v3/opts/comp/logs \
-        --loss ${loss} \
-        --model linear \
-        --max_epochs 500 \
-        --use_gene ./dataset/hest1k/st_v3/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --ngpu 1
-
-python ./strank/evaluation.py \
-        --data_dir ./dataset/hest1k/st_v3/feat/conch_v1\
-        --param_path ./dataset/hest1k/st_v3/opts/comp/${loss}/opt_param.pt \
-        --sample_ids SPA118 SPA117 SPA116  \
-        --model linear \
-        --loss ${loss} \
-        --batch_size 1024 \
-        --use_gene ./dataset/hest1k/st_v3/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --output_csv output/st3/${num_gene}/st_${loss}_exp.csv
-done
-done
-st
-['SPA118', 'SPA117', 'SPA116']
-['SPA115', 'SPA114', 'SPA113']
-$$$$$$$$$$$$$$$
-
-
-num_gene=50
-LOSS_NAMES=(mse nb poisson ranking strankg pearsona stranklist)
-for loss in "${LOSS_NAMES[@]}"
-do 
-
-python ./strank/train_hist.py \
-        --data_dir  ./dataset/hest1k/st_v2/paired_data\
-        --param_path ./dataset/hest1k/st_v2/opts/comp/${loss}/opt_param_his_${num_gene}.pt \
-        --test_sample_ids SPA136 SPA135 SPA134 SPA133 SPA132 SPA131  \
-        --val_sample_ids  SPA142 SPA141 SPA140 SPA139 SPA138 SPA137\
-        --log_dir ./dataset/hest1k/st_v2/opts/comp/logs_his \
-        --loss ${loss} \
-        --model linear \
-        --max_epochs 500 \
-        --use_gene ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --ngpu 1
-
-python ./strank/evaluation_his2gene.py \
-        --data_dir ./dataset/hest1k/st_v2/paired_data\
-        --param_path ./dataset/hest1k/st_v2/opts/comp/${loss}/opt_param_his_${num_gene}.pt \
-        --sample_ids SPA136 SPA135 SPA134 SPA133 SPA132 SPA131 \
-        --model linear \
-        --loss ${loss} \
-        --batch_size 1024 \
-        --use_gene ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --output_csv output2/his2gene_${num_gene}/st_${loss}_exp.csv
-done
-
-
-# to evaluate method on max number of genes
-LOSS_NAMES=(mse nb poisson ranking strankg pearsona stranklist_v2)
-GENE_NUMS=(500)
-for num_gene in "${GENE_NUMS[@]}"
-do
-python ./scripts/export_highly_variable.py \
-    --data_dir ./dataset/hest1k/task_1/feat/conch_v1 \
-    --output_path ./dataset/hest1k/task_1/opts/comp/highly_variable_genes_${num_gene}.txt \
-    --ntop_genes ${num_gene}
-
-for loss in "${LOSS_NAMES[@]}"
-do 
-
-python ./strank/train.py \
-        --data_dir  ./dataset/hest1k/st_task_1v3/feat/conch_v1\
-        --param_path ./dataset/hest1k/task_1/opts/comp/${loss}/opt_param.pt \
-        --test_sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --val_sample_ids SPA136 SPA135 SPA134 SPA133 SPA132 SPA131 \
-        --log_dir ./dataset/hest1k/task_1/opts/comp/logs \
-        --loss ${loss} \
-        --model linear \
-        --max_epochs 500 \
-        --use_gene ./dataset/hest1k/task_1/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --ngpu 1
-
-python ./strank/evaluation.py \
-        --data_dir ./dataset/hest1k/task_1/feat/conch_v1\
-        --param_path ./dataset/hest1k/task_1/opts/comp/${loss}/opt_param.pt \
-        --sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --model linear \
-        --loss ${loss} \
-        --batch_size 1024 \
-        --use_gene ./dataset/hest1k/task_1/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --output_csv output/st3/${num_gene}/st_${loss}_exp.csv
-done
-done
-
-# strank 10000 genes
-LOSS_NAMES=(mse nb poisson ranking strankg pearsona stranklist_v2)
-LOSS_NAMES=(strankg pearsona stranklist_v2)
-GENE_NUMS=(10000)
-for num_gene in "${GENE_NUMS[@]}"
-do
-python ./scripts/export_highly_variable.py \
-    --data_dir ./dataset/hest1k/st_v2/feat/conch_v1 \
-    --output_path ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_${num_gene}.txt \
-    --ntop_genes ${num_gene}
-
-for loss in "${LOSS_NAMES[@]}"
-do 
-
-python ./strank/train.py \
-        --data_dir  ./dataset/hest1k/st_v2/feat/conch_v1\
-        --param_path ./dataset/hest1k/st_v2/opts/comp/${loss}/opt_param_${num_gene}.pt \
-        --test_sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --val_sample_ids SPA136 SPA135 SPA134 SPA133 SPA132 SPA131 \
-        --log_dir ./dataset/hest1k/st_v2/opts/comp/logs \
-        --loss ${loss} \
-        --model linear \
-        --max_epochs 500 \
-        --use_gene ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --ngpu 1
-
-python ./strank/evaluation.py \
-        --data_dir ./dataset/hest1k/st_v2/feat/conch_v1\
-        --param_path ./dataset/hest1k/st_v2/opts/comp/${loss}/opt_param_${num_gene}.pt \
-        --sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --model linear \
-        --loss ${loss} \
-        --batch_size 1024 \
-        --use_gene ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --output_csv output/${num_gene}/st_${loss}_exp.csv
-done
-done
-
-## batch sampling change
-LOSS_NAMES=(stranklist)
-SAMPLING=(single pat)
-GENE_NUMS=(250 1000)
-for num_gene in "${GENE_NUMS[@]}"; 
-do 
-for sampling in "${SAMPLING[@]}"; 
-do 
-for loss in "${LOSS_NAMES[@]}"; 
-do  
-
-python ./strank/evaluation.py  \
-        --data_dir ./dataset/hest1k/st_v2/feat/conch_v1  \
-        --param_path ./dataset/hest1k/st_v2/opts/comp/${loss}/opt_param_${num_gene}_${sampling}.pt  \
-        --sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --model linear  \
-        --loss ${loss}  \
-        --batch_size 1024  \
-        --use_gene ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_${num_gene}.txt  \
-        --output_csv output/sampling/${num_gene}_${sampling}/st_${loss}_exp.csv
-done
-done
-done
-
-python ./strank/train.py        \
-        --data_dir  ./dataset/hest1k/st_v2/feat/conch_v1   \
-        --param_path ./dataset/hest1k/st_v2/opts/comp/${loss}/opt_param_${num_gene}_${sampling}.pt  \
-        --test_sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --val_sample_ids SPA136 SPA135 SPA134 SPA133 SPA132 SPA131  \
-        --log_dir ./dataset/hest1k/st_v2/opts/comp/logs \
-        --loss ${loss} --model linear --max_epochs 500 \
-        --use_gene ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_${num_gene}.txt --ngpu 1 \
-        --sampling_strategy ${sampling}
-
-
-## List loss evaluation
-LOSS_NAMES=(stranklist_v2)
-GENE_NUMS=(250 1000)
-for num_gene in "${GENE_NUMS[@]}"; 
-do 
-for loss in "${LOSS_NAMES[@]}"; 
-do  
-python ./strank/train.py         --data_dir  ./dataset/hest1k/st_v2/feat/conch_v1        --param_path ./dataset/hest1k/st_v2/opts/comp/${loss}/opt_param_${num_gene}.pt         --test_sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137          --val_sample_ids SPA136 SPA135 SPA134 SPA133 SPA132 SPA131         --log_dir ./dataset/hest1k/st_v2/opts/comp/logs         --loss ${loss}         --model linear         --max_epochs 500         --use_gene ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_${num_gene}.txt         --ngpu 1 
-
-python ./strank/evaluation.py         --data_dir ./dataset/hest1k/st_v2/feat/conch_v1        --param_path ./dataset/hest1k/st_v2/opts/comp/${loss}/opt_param_${num_gene}.pt         --sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137          --model linear         --loss ${loss}         --batch_size 1024         --use_gene ./dataset/hest1k/st_v2/opts/comp/highly_variable_genes_${num_gene}.txt         --output_csv output/${num_gene}/st_${loss}_exp.csv
-done
-done
-
-## 500 gene xenium target sample を変更すること
-
-LOSS_NAMES=(mse nb poisson ranking strankg pearsona stranklist_v2)
-GENE_NUMS=(500)
-for num_gene in "${GENE_NUMS[@]}"
-do
-python ./scripts/export_highly_variable.py \
-    --data_dir ./dataset/hest1k/task_1/feat/conch_v1 \
-    --output_path ./dataset/hest1k/task_1/opts/comp/highly_variable_genes_${num_gene}.txt \
-    --ntop_genes ${num_gene}
-
-for loss in "${LOSS_NAMES[@]}"
-do 
-
-python ./strank/train.py \
-        --data_dir  ./dataset/hest1k/task_1/feat/conch_v1\
-        --param_path ./dataset/hest1k/task_1/opts/comp/${loss}/opt_param_${num_gene}.pt \
-        --test_sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --val_sample_ids SPA136 SPA135 SPA134 SPA133 SPA132 SPA131 \
-        --log_dir ./dataset/hest1k/task_1/opts/comp/logs \
-        --loss ${loss} \
-        --model linear \
-        --max_epochs 500 \
-        --use_gene ./dataset/hest1k/task_1/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --ngpu 1
-
-python ./strank/evaluation.py \
-        --data_dir ./dataset/hest1k/task_1/feat/conch_v1\
-        --param_path ./dataset/hest1k/task_1/opts/comp/${loss}/opt_param_${num_gene}.pt \
-        --sample_ids SPA142 SPA141 SPA140 SPA139 SPA138 SPA137  \
-        --model linear \
-        --loss ${loss} \
-        --batch_size 1024 \
-        --use_gene ./dataset/hest1k/task_1/opts/comp/highly_variable_genes_${num_gene}.txt \
-        --output_csv output/${num_gene}/st_${loss}_exp.csv
-done
-done
+This repository is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
