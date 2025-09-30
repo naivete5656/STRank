@@ -1,0 +1,17 @@
+# Byte-compiled / optimized / DLL files
+.vscode/
+__pycache__/
+*.py[cod]
+*$py.class
+*.ipynb
+
+*.npy
+*.png
+*.pdf
+*.npz
+
+output_exp/
+outputs/
+others/
+strank/toy_example/quick/
+strank/toy_example/final/
