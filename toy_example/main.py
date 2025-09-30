@@ -44,20 +44,16 @@ def main(args):
     }
 
     method_list = [
-        # "MSELoss",
-        # "NBLoss",
-        # "PoissonLoss",
-        # "RankingLoss",
-        # "PearsonLoss",
-        # "GroupPearson",
-        "STRankLossStable",
+        "MSELoss",
+        "NBLoss",
+        "PoissonLoss",
+        "RankingLoss",
+        "STRankLossPair",
+        # "STRankLossStable",
+        "PearsonLoss",
         "STRankLoss",
-        # "STRankLossPair",
     ]
 
-    # method_list = [
-    #     "RankingLoss",
-    # ]
     # loss_type, custom_mu, toy_type="default"
     for loss_type in method_list:
         # Set random seed for reproducibility

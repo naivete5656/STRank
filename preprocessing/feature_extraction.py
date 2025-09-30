@@ -18,7 +18,6 @@ import timm
 from torch.utils.data import DataLoader
 from PIL import Image
 import h5py
-import openslide
 from tqdm import tqdm
 
 import numpy as np

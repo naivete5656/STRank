@@ -12,3 +12,4 @@ output2/
 xenium/
 toy_example/outputs/
 toy_example/others/
+toy_example/wandb/

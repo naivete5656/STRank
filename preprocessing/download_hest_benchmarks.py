@@ -9,12 +9,10 @@ task_id = sys.argv[1]
 
 df = pd.read_csv("./dataset/hest1k/HEST_v1_1_0.csv")
 
-from huggingface_hub import login
-
+# from huggingface_hub import login
+# login(os.environ["HUGGINGFACE_TOKEN"])
 
 import os
-
-login(os.environ["HUGGINGFACE_TOKEN"])
 
 import datasets
 

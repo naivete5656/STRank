@@ -7,11 +7,8 @@ This repository is the official implementation of [Learning to Relative Expressi
 
 ## Requirements
 
-To install requirements:
-
-```setup
-pip install -r requirements.txt
-```
+- pytorch
+- doten
 
 ## Training and evaluation on synthetic data
 To train the model(s) in the paper, run this command:
@@ -61,8 +58,8 @@ python ./preprocessing/feature_extraction.py --model_name conch_v1 \
     --save_dir ./dataset/hest1k/task_1/feat/conch_v1 \
     --input_dir ./dataset/hest1k/task_1/paired_data
 python ./scripts/export_highly_variable.py \
-    ./dataset/hest1k/task_1/feat/conch_v1 \
-    ./dataset/hest1k/task_1/opts/comp/highly_variable_genes.txt \
+    --data_dir ./dataset/hest1k/task_1/feat/conch_v1 \
+    --output_path ./dataset/hest1k/task_1/opts/comp/highly_variable_genes.txt \
     --ntop_genes 50
 
 # run benchmark

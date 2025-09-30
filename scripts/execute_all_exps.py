@@ -1,6 +1,7 @@
 import subprocess
 
-targets = ["task_3", "task_2"]
+# targets = ["task_1", "task_2", "task_3", "task_5", "task_6", "task_7", "task_9"]
+targets = ["task_1"]
 # # targets = [
 # #     'breat_xenium'
 # ]
@@ -27,16 +28,10 @@ test_id_dict = {
     "breat_visium": "TENX53",
 }
 for target in targets:
-    subprocess.run(
-        f"python ./preprocessing/download_hest_benchmarks.py {target}",
-        shell=True,
-    )
-    for feature in ["dinov2", "conch_v1"]:
+    subprocess.run(f"python ./preprocessing/download_hest_benchmarks.py {target}",shell=True)
+    for feature in ["conch_v1", "dinov2"]:
+        subprocess.run(f"bash ./scripts/prepare_features.sh ./dataset/hest1k/{target} {feature}",shell=True)
         subprocess.run(
-            f"bash ./script/prepare_features.sh ./dataset/hest1k/{target} {feature}",
-            shell=True,
-        )
-        subprocess.run(
-            f"bash ./script/comp_eval_general_id.sh comp_{feature} ./dataset/hest1k/{target} {feature} {val_id_dict[target]} {test_id_dict[target]} linear 50",
+            f"bash ./scripts/comp_eval_general_id.sh comp_{feature} ./dataset/hest1k/{target} {feature} {val_id_dict[target]} {test_id_dict[target]} linear 50",
             shell=True,
         )
