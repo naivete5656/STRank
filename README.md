@@ -115,7 +115,7 @@ If you use the code or results in this repository, please cite our paper:
   title={Learning Relative Gene Expression Trends
 under Batch Effects and Stochastic Noise
 in Spatial Transcriptomics},
-  author={Kazuya Nishimura, , Haruka Hirose, Ryoma Bise, Kaito Shiku, Yasuhiro Kojima},
+  author={Kazuya Nishimura, Haruka Hirose, Ryoma Bise, Kaito Shiku, Yasuhiro Kojima},
   journal={Neurips},
   year={2025}
 }
