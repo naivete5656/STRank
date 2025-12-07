@@ -1,7 +1,6 @@
 
 # Learning to Relative Expression under Batch Effects and Stochastic Noise in Spatial Transcriptomics
-This repository is the official implementation of [Learning to Relative Expression under Batch Effects and Stochastic Noise in Spatial Transcriptomics]
-<!-- (https://arxiv.org/abs/2030.12345).  -->
+This repository is the official implementation of [Learning to Relative Expression under Batch Effects and Stochastic Noise in Spatial Transcriptomics](https://openreview.net/pdf?id=X3zarVyJ5B).
 
 ![Concept](./figures/concept.png)
 
